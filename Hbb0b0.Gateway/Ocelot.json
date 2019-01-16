@@ -1,0 +1,39 @@
+{
+  "ReRoutes": [
+    {
+      /*下游模板，上游会把请求转发给下游
+      例如：
+      访问 api的入口  http://localhost:6000/Values
+      会把请求转发给 http://localhost:6001/api/Values  http://localhost:6002/api/Values,
+      当localhost:1001 与 localhost:1002 响应结束后，localhost:1000 会把获取的结果返回给
+      调用端
+      */
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6001
+        },
+        {
+          "Host": "localhost",
+          "Port": 6002
+        }
+      ],
+      /*上游模板，即暴露给外部的URL*/
+      "UpstreamPathTemplate": "/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      /*负载均衡配置
+    LeastConnection : 将请求发往最空闲的那个服务器
+    RoundRobin ：轮流发送
+    NoLoadBalance ：不启用负载均衡，总是发往第一个请求或者服务发现的那个服务器
+      */
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+
+  }
+}
